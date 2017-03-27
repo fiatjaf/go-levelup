@@ -1,15 +1,16 @@
-package levelup
+package levelup_test
 
 import (
 	"testing"
 
 	"github.com/facebookgo/ensure"
+	"github.com/fiatjaf/levelup"
 )
 
-func BasicTests(db DB, t *testing.T) {
+func BasicTests(db levelup.DB, t *testing.T) {
 	/*** basic put, get, del ***/
 	value, err := db.Get("key-x")
-	ensure.DeepEqual(t, err, NotFound)
+	ensure.DeepEqual(t, err, levelup.NotFound)
 	ensure.DeepEqual(t, value, "")
 
 	err = db.Put("key-x", "some value")
@@ -20,7 +21,7 @@ func BasicTests(db DB, t *testing.T) {
 	err = db.Del("key-x")
 	ensure.Nil(t, err)
 	value, err = db.Get("key-x")
-	ensure.DeepEqual(t, err, NotFound)
+	ensure.DeepEqual(t, err, levelup.NotFound)
 	ensure.DeepEqual(t, value, "")
 
 	/*** batch put ***/
@@ -32,16 +33,16 @@ func BasicTests(db DB, t *testing.T) {
 		"number:2": "2",
 		"number:3": "3",
 	}
-	batch := []Operation{}
+	batch := []levelup.Operation{}
 	for k, v := range somevalues {
-		batch = append(batch, OpPut(k, v))
+		batch = append(batch, levelup.OpPut(k, v))
 	}
 	err = db.Batch(batch)
 	ensure.Nil(t, err)
 
 	/*** reading ranges ***/
 	// start-end
-	iter := db.ReadRange(&RangeOpts{
+	iter := db.ReadRange(&levelup.RangeOpts{
 		Start: "letter:b",
 		End:   "letter:~",
 	})
@@ -54,7 +55,7 @@ func BasicTests(db DB, t *testing.T) {
 	iter.Release()
 
 	// *-end
-	iter = db.ReadRange(&RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		End: "letter:c", /* non-inclusive */
 	})
 	retrieved = []string{}
@@ -66,7 +67,7 @@ func BasicTests(db DB, t *testing.T) {
 	iter.Release()
 
 	// start-* limit
-	iter = db.ReadRange(&RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		Start: "letter:c",
 		Limit: 2,
 	})
@@ -79,7 +80,7 @@ func BasicTests(db DB, t *testing.T) {
 	iter.Release()
 
 	// reverse
-	iter = db.ReadRange(&RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		Reverse: true,
 	})
 	retrieved = []string{}
@@ -94,7 +95,7 @@ func BasicTests(db DB, t *testing.T) {
 	iter.Release()
 
 	// reverse start-end
-	iter = db.ReadRange(&RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		Start:   "letter:c",
 		End:     "number:1~",
 		Reverse: true,
@@ -108,7 +109,7 @@ func BasicTests(db DB, t *testing.T) {
 	iter.Release()
 
 	// reverse *-end limit
-	iter = db.ReadRange(&RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		End:     "number:3", /* non-inclusive */
 		Reverse: true,
 		Limit:   3,

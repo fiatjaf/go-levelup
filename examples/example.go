@@ -2,9 +2,11 @@ package levelup
 
 import (
 	"fmt"
+
+	"github.com/fiatjaf/levelup"
 )
 
-func Example(db DB) {
+func Example(db levelup.DB) {
 	fmt.Println("setting key1 to x")
 	db.Put("key1", "x")
 	res, _ := db.Get("key1")
@@ -19,14 +21,14 @@ func Example(db DB) {
 	fmt.Println("res at key1: ", res)
 
 	fmt.Println("batch")
-	db.Batch([]Operation{
-		OpPut("key2", "w"),
-		OpPut("key3", "z"),
-		OpDel("key1"),
-		OpPut("key1", "t"),
-		OpPut("key4", "m"),
-		OpPut("key5", "n"),
-		OpDel("key3"),
+	db.Batch([]levelup.Operation{
+		levelup.OpPut("key2", "w"),
+		levelup.OpPut("key3", "z"),
+		levelup.OpDel("key1"),
+		levelup.OpPut("key1", "t"),
+		levelup.OpPut("key4", "m"),
+		levelup.OpPut("key5", "n"),
+		levelup.OpDel("key3"),
 	})
 	res, _ = db.Get("key1")
 	fmt.Println("res at key1: ", res)
