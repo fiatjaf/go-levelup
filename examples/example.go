@@ -22,13 +22,13 @@ func Example(db levelup.DB) {
 
 	fmt.Println("batch")
 	db.Batch([]levelup.Operation{
-		levelup.OpPut("key2", "w"),
-		levelup.OpPut("key3", "z"),
-		levelup.OpDel("key1"),
-		levelup.OpPut("key1", "t"),
-		levelup.OpPut("key4", "m"),
-		levelup.OpPut("key5", "n"),
-		levelup.OpDel("key3"),
+		levelup.Put("key2", "w"),
+		levelup.Put("key3", "z"),
+		levelup.Del("key1"),
+		levelup.Put("key1", "t"),
+		levelup.Put("key4", "m"),
+		levelup.Put("key5", "n"),
+		levelup.Del("key3"),
 	})
 	res, _ = db.Get("key1")
 	fmt.Println("res at key1: ", res)

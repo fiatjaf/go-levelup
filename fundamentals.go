@@ -10,8 +10,11 @@ type DB interface {
 	ReadRange(*RangeOpts) ReadIterator
 }
 
-func OpPut(key, value string) Operation { return Operation{"type": "put", "key": key, "value": value} }
-func OpDel(key string) Operation        { return Operation{"type": "del", "key": key} }
+func Put(key, value string) Operation { return Operation{"type": "put", "key": key, "value": value} }
+func Del(key string) Operation        { return Operation{"type": "del", "key": key} }
+
+var BatchPut = Put
+var BatchDel = Del
 
 type Operation map[string]string
 

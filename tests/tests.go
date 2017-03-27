@@ -35,7 +35,7 @@ func BasicTests(db levelup.DB, t *testing.T) {
 	}
 	batch := []levelup.Operation{}
 	for k, v := range somevalues {
-		batch = append(batch, levelup.OpPut(k, v))
+		batch = append(batch, levelup.Put(k, v))
 	}
 	err = db.Batch(batch)
 	ensure.Nil(t, err)
