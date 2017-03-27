@@ -7,7 +7,7 @@ type DB interface {
 	Get(string) (string, error)
 	Del(string) error
 	Batch([]Operation) error
-	ReadRange(RangeOpts) ReadIterator
+	ReadRange(*RangeOpts) ReadIterator
 }
 
 func OpPut(key, value string) Operation { return Operation{"type": "put", "key": key, "value": value} }
@@ -16,18 +16,33 @@ func OpDel(key string) Operation        { return Operation{"type": "del", "key":
 type Operation map[string]string
 
 type RangeOpts struct {
-	Start   string // included
-	End     string // not included
-	Reverse bool
-	Limit   int
+	Start   string // included, default ""
+	End     string // not included, default "~~~~~"
+	Reverse bool   // default false
+	Limit   int    // default 9999999
+}
+
+const (
+	DefaultRangeLimit = 9999999
+	DefaultRangeEnd   = "~~~~~"
+)
+
+func (ro *RangeOpts) FillDefaults() {
+	if ro.Limit == 0 {
+		ro.Limit = DefaultRangeLimit
+	}
+	if ro.End == "" {
+		ro.End = DefaultRangeEnd
+	}
 }
 
 type ReadIterator interface {
-	Next() bool
-	Key() string
-	Value() string
-	Error() error
-	Release()
+	Valid() bool   // returns false when we have reached the end of the rows we asked for.
+	Next()         // go to the next row.
+	Key() string   // the key in the current row.
+	Value() string // the value in the current row.
+	Error() error  // if some error has happened this have it.
+	Release()      // it may be necessary to call this after using, or defer it.
 }
 
 var (
