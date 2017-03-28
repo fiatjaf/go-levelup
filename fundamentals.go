@@ -2,14 +2,6 @@ package levelup
 
 import "errors"
 
-type DB interface {
-	Put(string, string) error
-	Get(string) (string, error)
-	Del(string) error
-	Batch([]Operation) error
-	ReadRange(*RangeOpts) ReadIterator
-}
-
 func Put(key, value string) Operation { return Operation{"type": "put", "key": key, "value": value} }
 func Del(key string) Operation        { return Operation{"type": "del", "key": key} }
 
@@ -37,15 +29,6 @@ func (ro *RangeOpts) FillDefaults() {
 	if ro.End == "" {
 		ro.End = DefaultRangeEnd
 	}
-}
-
-type ReadIterator interface {
-	Valid() bool   // returns false when we have reached the end of the rows we asked for.
-	Next()         // go to the next row.
-	Key() string   // the key in the current row.
-	Value() string // the value in the current row.
-	Error() error  // if some error has happened this have it.
-	Release()      // it may be necessary to call this after using, or defer it.
 }
 
 var (
