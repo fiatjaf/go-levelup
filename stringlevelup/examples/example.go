@@ -4,12 +4,9 @@ import (
 	"fmt"
 
 	"github.com/fiatjaf/levelup"
-	"github.com/fiatjaf/levelup/stringlevelup"
 )
 
-func Example(updb levelup.DB) {
-	db := stringlevelup.StringDB(updb)
-
+func Example(db levelup.DB) {
 	fmt.Println("setting key1 to x")
 	db.Put("key1", "x")
 	res, _ := db.Get("key1")
@@ -25,13 +22,13 @@ func Example(updb levelup.DB) {
 
 	fmt.Println("batch")
 	db.Batch([]levelup.Operation{
-		stringlevelup.Put("key2", "w"),
-		stringlevelup.Put("key3", "z"),
-		stringlevelup.Del("key1"),
-		stringlevelup.Put("key1", "t"),
-		stringlevelup.Put("key4", "m"),
-		stringlevelup.Put("key5", "n"),
-		stringlevelup.Del("key3"),
+		levelup.Put("key2", "w"),
+		levelup.Put("key3", "z"),
+		levelup.Del("key1"),
+		levelup.Put("key1", "t"),
+		levelup.Put("key4", "m"),
+		levelup.Put("key5", "n"),
+		levelup.Del("key3"),
 	})
 	res, _ = db.Get("key1")
 	fmt.Println("res at key1: ", res)

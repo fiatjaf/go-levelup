@@ -2,31 +2,35 @@ package levelup
 
 import "errors"
 
-func Put(key, value string) Operation { return Operation{"type": "put", "key": key, "value": value} }
-func Del(key string) Operation        { return Operation{"type": "del", "key": key} }
+type Operation struct {
+	Type  string
+	Key   []byte
+	Value []byte
+}
+
+func Put(key, value []byte) Operation { return Operation{"put", key, value} }
+func Del(key []byte) Operation        { return Operation{"del", key, []byte{}} }
 
 var BatchPut = Put
 var BatchDel = Del
 
-type Operation map[string]string
-
 type RangeOpts struct {
-	Start   string // included, default ""
-	End     string // not included, default "~~~~~"
+	Start   []byte // included, default []byte{}
+	End     []byte // not included, default []byte{0xff, 0xff, 0xff, 0xff, 0xff}
 	Reverse bool   // default false
 	Limit   int    // default 9999999
 }
 
-const (
+var (
 	DefaultRangeLimit = 9999999
-	DefaultRangeEnd   = "~~~~~"
+	DefaultRangeEnd   = []byte{0xff, 0xff, 0xff, 0xff, 0xff}
 )
 
 func (ro *RangeOpts) FillDefaults() {
 	if ro.Limit == 0 {
 		ro.Limit = DefaultRangeLimit
 	}
-	if ro.End == "" {
+	if len(ro.End) == 0 {
 		ro.End = DefaultRangeEnd
 	}
 }

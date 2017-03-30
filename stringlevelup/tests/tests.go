@@ -4,15 +4,14 @@ import (
 	"testing"
 
 	"github.com/fiatjaf/levelup"
-	"github.com/fiatjaf/levelup/stringlevelup"
 	. "gopkg.in/check.v1"
 )
 
-var db stringlevelup.DB
+var db levelup.DB
 var err error
 
-func Test(updb levelup.DB, t *testing.T) {
-	db = stringlevelup.StringDB(updb)
+func Test(sdb levelup.DB, t *testing.T) {
+	db = sdb
 	TestingT(t)
 }
 
@@ -51,7 +50,7 @@ func (s *BasicSuite) Test2BatchPut(c *C) {
 	}
 	batch := []levelup.Operation{}
 	for k, v := range somevalues {
-		batch = append(batch, stringlevelup.Put(k, v))
+		batch = append(batch, levelup.Put(k, v))
 	}
 	err = db.Batch(batch)
 	c.Assert(err, IsNil)
@@ -76,7 +75,7 @@ func (s *BasicSuite) Test2BatchPut(c *C) {
 
 func (s *BasicSuite) Test3ReadRange(c *C) {
 	// start-end
-	iter := db.ReadRange(&stringlevelup.RangeOpts{
+	iter := db.ReadRange(&levelup.RangeOpts{
 		Start: "letter:b",
 		End:   "letter:~",
 	})
@@ -90,7 +89,7 @@ func (s *BasicSuite) Test3ReadRange(c *C) {
 	iter.Release()
 
 	// *-end
-	iter = db.ReadRange(&stringlevelup.RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		End: "letter:c", /* non-inclusive */
 	})
 	retrieved = []string{}
@@ -103,7 +102,7 @@ func (s *BasicSuite) Test3ReadRange(c *C) {
 	iter.Release()
 
 	// start-* limit
-	iter = db.ReadRange(&stringlevelup.RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		Start: "letter:c",
 		Limit: 2,
 	})
@@ -117,7 +116,7 @@ func (s *BasicSuite) Test3ReadRange(c *C) {
 	iter.Release()
 
 	// reverse
-	iter = db.ReadRange(&stringlevelup.RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		Reverse: true,
 	})
 	retrieved = []string{}
@@ -133,7 +132,7 @@ func (s *BasicSuite) Test3ReadRange(c *C) {
 	iter.Release()
 
 	// reverse start-end
-	iter = db.ReadRange(&stringlevelup.RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		Start:   "letter:c",
 		End:     "number:1~",
 		Reverse: true,
@@ -148,7 +147,7 @@ func (s *BasicSuite) Test3ReadRange(c *C) {
 	iter.Release()
 
 	// reverse *-end limit
-	iter = db.ReadRange(&stringlevelup.RangeOpts{
+	iter = db.ReadRange(&levelup.RangeOpts{
 		End:     "number:3", /* non-inclusive */
 		Reverse: true,
 		Limit:   3,
@@ -165,18 +164,18 @@ func (s *BasicSuite) Test3ReadRange(c *C) {
 
 func (s *BasicSuite) Test4MoreBatches(c *C) {
 	batch := []levelup.Operation{
-		stringlevelup.Del("number:2"),
-		stringlevelup.Del("number:1"),
-		stringlevelup.Put("number:3", "33"),
-		stringlevelup.Del("number:4"),
-		stringlevelup.Del("letter:a"),
-		stringlevelup.Del("number:3"),
-		stringlevelup.Del("letter:b"),
-		stringlevelup.Del("letter:c"),
-		stringlevelup.Put("number:3", "333"),
-		stringlevelup.Del("letter:d"),
-		stringlevelup.Put("letter:d", "dd"),
-		stringlevelup.Del("letter:e"),
+		levelup.Del("number:2"),
+		levelup.Del("number:1"),
+		levelup.Put("number:3", "33"),
+		levelup.Del("number:4"),
+		levelup.Del("letter:a"),
+		levelup.Del("number:3"),
+		levelup.Del("letter:b"),
+		levelup.Del("letter:c"),
+		levelup.Put("number:3", "333"),
+		levelup.Del("letter:d"),
+		levelup.Put("letter:d", "dd"),
+		levelup.Del("letter:e"),
 	}
 	err = db.Batch(batch)
 	c.Assert(err, IsNil)
