@@ -1,7 +1,5 @@
 package levelup
 
-import "errors"
-
 type Operation struct {
 	Type  string
 	Key   []byte
@@ -35,6 +33,10 @@ func (ro *RangeOpts) FillDefaults() {
 	}
 }
 
-var (
-	NotFound = errors.New("not found")
+type Error string
+
+func (e Error) Error() string { return string(e) }
+
+const (
+	NotFound = Error("levelup: not found")
 )
