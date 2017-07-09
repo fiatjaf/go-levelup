@@ -18,3 +18,9 @@ Any similarity with the [Node.js LevelUP](https://github.com/Level/levelup) is m
   * `RangeOpts` treats go zero values as if you didn't pass anything, so `Limit: 0` is the same as no limit, `Start: ""` is the same as no start etc.
   * In `RangeOpts` `Start` is inclusive, `End` is non-inclusive.
   * All keys and values are `[]byte`, if you want to use strings, see [github.com/fiatjaf/levelup/stringlevelup](https://github.com/fiatjaf/levelup/tree/master/stringlevelup).
+
+---
+
+traffic analytics for this repo:
+
+[![](https://ght.trackingco.de/fiatjaf/levelup)](https://ght.trackingco.de/)
